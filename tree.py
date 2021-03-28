@@ -93,8 +93,8 @@ xs, ys = [], []
 tree(Branch(0, 0, 0, 0.4), 14, xs, ys)
 
 plt.plot(xs, ys)
-plt.show()
-
+# plt.show()
+plt.savefig('tree.png')
 
 
 
