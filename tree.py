@@ -1,11 +1,23 @@
+"""
+Python script that draws a random tree and displays it using matplotlib
+The random properties are:
+	+ The angle of the child branches given parent branch angle: Generated between [angle-MAX_DEVIATION, angle+MAX_DEVIATION]
+	with a uniform distribution 
+	+ The length of the child branches given parent branch length: Generated between [MIN_BRANCH_SIZE_RATIO*parent_length, MAX_BRANCH_SIZE_RATIO*parent_length]
+
+depth is also an input parameter of the function which is the number of branch levels in the tree
+
+You can change these values and see the effect on the generated trees.
+"""
+
 import matplotlib.pyplot as plt
 from math import tan, pi, sqrt, atan
 from random import uniform
 import numpy as np
 
 
-MAX_DEVIATION=pi/8 # child branch will be deviated from parent by maximum + or - this value
-MAX_BRANCH_SIZE_RATIO = 0.8 # child branch has a length between MIN_BRANCH_SIZE_RATIO and MAX_BRANCH_SIZE_RATIO
+MAX_DEVIATION=pi/8
+MAX_BRANCH_SIZE_RATIO = 0.8
 MIN_BRANCH_SIZE_RATIO = 0.5
 
 
@@ -34,7 +46,7 @@ class Branch:
 
 	def slope(self):
 		if self.x1 == self.x2: return (self.y2-self.y1)/(self.x2-self.x1+0.00001) 
-		return (self.y2-self.y1)/(self.x2-self.x1) # TODO: handle case x2 == x1
+		return (self.y2-self.y1)/(self.x2-self.x1)
 
 
 
@@ -43,7 +55,13 @@ def tree(parent, depth, xs, ys):
 	"""
 	parent: is the root segment of the tree to be generated
 	depth: number of branch levels of the tree
+
+	the function adds generated branches extremities to params xs an ys
 	"""
+	if not xs:
+		xs += [parent.x1, parent.x2]
+		ys += [parent.y1, parent.y2]
+
 	if depth <= 0: return
 	a = parent.slope()
 	parentLength = parent.length()
@@ -71,13 +89,12 @@ def tree(parent, depth, xs, ys):
 	tree(childBranch2, depth-1, xs, ys)
 
 
-xs = [0, 0]
-ys = [0, 0.4]
-
+xs, ys = [], []
 tree(Branch(0, 0, 0, 0.4), 14, xs, ys)
 
 plt.plot(xs, ys)
 plt.show()
+
 
 
 
