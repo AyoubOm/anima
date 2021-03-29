@@ -1,5 +1,6 @@
 """
 Python script that draws a random tree and displays it using matplotlib
+
 The random properties are:
 	+ The angle of the child branches given parent branch angle: Generated between [angle-MAX_DEVIATION, angle+MAX_DEVIATION]
 	with a uniform distribution 
@@ -14,41 +15,11 @@ import matplotlib.pyplot as plt
 from math import tan, pi, sqrt, atan
 from random import uniform
 import numpy as np
-
+from Branch import Branch
 
 MAX_DEVIATION=pi/8
 MAX_BRANCH_SIZE_RATIO = 0.8
 MIN_BRANCH_SIZE_RATIO = 0.5
-
-
-class Branch:
-	def __init__(self, x1, y1, x2, y2):
-		"""
-		bottom and top are points represented as 2-elements array
-		"""
-		self.x1 = x1
-		self.x2 = x2
-		self.y1 = y1
-		self.y2 = y2
-
-	def initFromCharacteristics(self, slope, length):
-		x1 = self.x2
-		y1 = self.y2
-		if slope < 0:
-			x2 = -length/sqrt(slope**2+1) + x1
-		else:
-			x2 = length/sqrt(slope**2+1) + x1
-		y2 = slope*(x2-x1) + y1
-		return Branch(x1, y1, x2, y2)
-
-	def length(self):
-		return sqrt((self.x2-self.x1)**2 + (self.y2-self.y1)**2)
-
-	def slope(self):
-		if self.x1 == self.x2: return (self.y2-self.y1)/(self.x2-self.x1+0.00001) 
-		return (self.y2-self.y1)/(self.x2-self.x1)
-
-
 
 
 def tree(parent, depth, xs, ys):
@@ -88,14 +59,11 @@ def tree(parent, depth, xs, ys):
 	ys.append(childBranch2.y2)
 	tree(childBranch2, depth-1, xs, ys)
 
-
 xs, ys = [], []
 tree(Branch(0, 0, 0, 0.4), 14, xs, ys)
 
 plt.plot(xs, ys)
-# plt.show()
-plt.savefig('tree.png')
-
+plt.show()
 
 
 
