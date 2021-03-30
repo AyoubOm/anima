@@ -6,3 +6,6 @@ Examples of randomly generated trees of depth `14`, max deviation angle `pi/8` a
 
 ![plot](./tree/outputs/tree1.png)
 ![plot](./tree/outputs/tree2.png)
+
+## Animated tree drawing
+![Alt Text](./tree/outputs/tree.gif)
