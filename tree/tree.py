@@ -9,6 +9,8 @@ The random properties are:
 depth is also an input parameter of the function which is the number of branch levels in the tree
 
 You can change these values and see the effect on the generated trees.
+
+For further explanation: https://ayoubomari.medium.com/random-tree-generator-using-python-68a357e012ca
 """
 
 import matplotlib.pyplot as plt
