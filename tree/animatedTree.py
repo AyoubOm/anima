@@ -10,11 +10,17 @@ depth is also an input parameter of the function which is the number of branch l
 
 You can change these values and see the effect on the generated trees.
 """
-
-
 import turtle
 from math import pi
 from random import uniform
+from PIL import Image, EpsImagePlugin
+import os
+from pathlib import Path
+import shutil
+
+
+
+EpsImagePlugin.gs_windows_binary =  r'C:\Program Files (x86)\gs\gs9.53.3\bin\gswin32c'
 
 
 MAX_DEVIATION=pi/8
@@ -74,9 +80,61 @@ def init(depth, initialLength, rootPoint):
 	turtle.forward(initialLength)
 
 
-depth = 14
-initialLength = 100
-init(depth, initialLength, rootPoint = (0, -200))
 
-tree((0, -100), depth, initialLength)
+
+
+TMP_DIR = "./tmp_images/"
+Path(TMP_DIR).mkdir(parents=True, exist_ok=True)
+
+
+
+def draw():
+	depth = 14
+	initialLength = 100
+	init(depth, initialLength, rootPoint = (0, -260))
+
+	tree((0, -160), depth, initialLength)
+	turtle.done()
+
+	turtle.ontimer(stop, 500)
+
+
+running = True
+FRAMES_PER_SECOND = 100
+
+def stop():
+	running = False
+
+images = []
+
+
+
+def addToGif(canvas, counter):
+	"""
+	The gif is created using captures of drawing state
+	"""
+	fileName = TMP_DIR+"out_tree{0:03d}".format(counter[0])
+	canvas.postscript(file = fileName + '.eps')
+	img = Image.open(fileName + '.eps')
+	img.save(fileName + '.png', 'png') # appending image from ".eps" directly doesn't work
+	img = Image.open(fileName + '.png')
+	images.append(img)
+
+
+
+
+def save(counter=[1]):
+	addToGif(turtle.getcanvas(), counter)
+	counter[0] += 1
+	if running:
+		turtle.ontimer(save, int(1000 / FRAMES_PER_SECOND))
+
+# shutil.rmtree(TMP_DIR)
+
+save()  # start the recording
+
+turtle.ontimer(draw, 500)
+
 turtle.done()
+
+images[0].save('out.gif', save_all=True, append_images=images[1:], optimize=False, loop=0)
