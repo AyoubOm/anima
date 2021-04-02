@@ -1,4 +1,4 @@
-# Drawings and animations using Python.
+# Drawings and animations using Python
 
 
 ## Tree
@@ -9,3 +9,9 @@ Examples of randomly generated trees of depth `14`, max deviation angle `pi/8` a
 
 ## Animated tree drawing
 ![Alt Text](./tree/outputs/tree.gif)
+
+## Random Maze Generation
+The algorithm used to generate the maze is randomized DFS. We start with a grid having walls everywhere between any two cells. We use DFS to open walls by randomly choosing a neighbour.
+
+![Alt Text](./maze/outputs/maze.gif)
+
