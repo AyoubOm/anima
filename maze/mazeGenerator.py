@@ -58,37 +58,40 @@ def connect(x1, y1, x2, y2):
 
 
 
-def drawMaze(x, y, N, visited):
-	neighbors = [(-1,0),(0,-1),(1,0),(0,1)]
-	validNeighbors = []
-	for nx,ny in neighbors:
-		if x + nx < N and y + ny < N and x+nx>=0 and y+ny>=0:
-			validNeighbors.append((x+nx, y+ny))
+def drawMaze(N):
+	visited = set()
+	stack = [(0, 0)]
+
+	while stack:
+		x, y = stack[-1]
+
+		neighbors = [(-1,0),(0,-1),(1,0),(0,1)]
+		validNeighbors = []
+		for nx,ny in neighbors:
+			if x + nx < N and y + ny < N and x + nx >= 0 and y + ny >= 0:
+				validNeighbors.append((x+nx, y+ny))
 
 
-	validNeighbors = [n for n in validNeighbors if n not in visited]
-	print(x, y, validNeighbors, visited)
-
-	if not validNeighbors: return
-
-	while validNeighbors:
-		nx, ny = random.choice(validNeighbors)
-		connect(x, y, nx, ny)
-
-		visited.add((nx, ny))
-		drawMaze(nx, ny, N, visited)
 		validNeighbors = [n for n in validNeighbors if n not in visited]
 
-	return
+		if not validNeighbors:
+			stack.pop()
+
+		else:
+			nx, ny = random.choice(validNeighbors)
+			connect(x, y, nx, ny)
+			visited.add((nx, ny))
+			stack.append((nx, ny))
 
 
 
-N = 32
+
+N = 64
 initGrid(N)
 
 pygame.draw.rect(screen, WHITE, (1, 1, UNIT_SIDE-2, UNIT_SIDE-2))
 
-drawMaze(0, 0, N, set([(0, 0)]))
+drawMaze(N)
 
 
 
