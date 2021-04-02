@@ -17,8 +17,8 @@ import turtle
 from math import pi
 from random import uniform
 from PIL import EpsImagePlugin
-import os
 from pathlib import Path
+import shutil
 
 from gif import addToGif
 
@@ -120,7 +120,7 @@ def drawAndSaveAnimation():
 
 	images[0].save('outputs/tree.gif', save_all=True, append_images=images[1:], optimize=False, loop=0)
 
-
+	shutil.rmtree(TMP_DIR)
 
 # draw()  # draw without saving gif - more interactive
 drawAndSaveAnimation()
