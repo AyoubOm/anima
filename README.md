@@ -15,3 +15,7 @@ The algorithm used to generate the maze is randomized DFS. We start with a grid 
 
 ![Alt Text](./maze/outputs/maze.gif)
 
+## Maze Solving
+Use DFS to solve the generated maze.
+
+![Alt Text](./maze/outputs/mazeSolve.gif)
