@@ -19,3 +19,8 @@ The algorithm used to generate the maze is randomized DFS. We start with a grid 
 Use DFS to solve the generated maze.
 
 ![Alt Text](./maze/outputs/mazeSolve.gif)
+
+## Projectile motion
+Simulation of a projectile motion based on Newton's second law of motion.
+
+![Alt Text](./projectile/outputs/projectile.gif)
