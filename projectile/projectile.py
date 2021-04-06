@@ -1,3 +1,8 @@
+"""
+simulation of a projectile motion using Newton's second law of motion.
+Only gravitational force is considered
+"""
+
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -25,9 +30,17 @@ class Projectile:
 		return (vx0*deltaT + x0, -0.5*gravityAcceleration*(deltaT**2) + vy0*deltaT + y0)
 
 
+	def velocityX(self, deltaT):
+		return self.vx0
+
+	def velocityY(self, deltaT):
+		return abs(self.vy0 - gravityAcceleration*deltaT)
+
 
 fig = plt.figure()
 axes = plt.axes(xlim=(0, 300), ylim=(0, 200)) # in meters
+
+
 
 class ProjectilesAnimation:
 
@@ -42,6 +55,11 @@ class ProjectilesAnimation:
 			color = (float(1/N)*(i+1), 0, float(1/N)*(i+1))
 			self.currentPositions = self.currentPositions + (axes.plot([], [], 'o', color = color+(1, ))[0], )
 			self.previousPositions = self.previousPositions + (axes.plot([], [], 'o', color = color+(0.2, ))[0], )
+
+		self.vxText = plt.text(220, 170, "vx={} m/s".format(self.projectiles[0].vx0), fontsize=10, color=(float(1/N), 0, float(1/N)))
+		self.vyText = plt.text(220, 160, "vy={} m/s".format(self.projectiles[0].vy0), fontsize=10, color=(float(1/N), 0, float(1/N)))
+
+
 
 
 	def update(self, i):
@@ -61,13 +79,19 @@ class ProjectilesAnimation:
 			x, y = projectile.position(deltaT)
 			currentPos.set_data([x], [y])
 
-		return self.previousPositions + self.currentPositions
+		self.vxText.set_text("vx={} m/s".format(self.projectiles[0].velocityX(deltaT)))
+		self.vyText.set_text("vy={} m/s".format(round(self.projectiles[0].velocityY(deltaT), 2)))
 
 
-projectiles = [Projectile(5, 5, 20, 40), Projectile(5, 5, 40, 30), Projectile(5, 5, 10, 60)]
-animation = ProjectilesAnimation(projectiles, frames = 80, interval=200)
+		return self.previousPositions + self.currentPositions + (self.vxText, self.vyText)
 
-FuncAnimation(fig, animation.update, frames=animation.frames, interval=animation.interval, blit=True)
+
+projectiles = [Projectile(5, 5, 10, 60), Projectile(5, 5, 20, 40), Projectile(5, 5, 40, 30)]
+animation = ProjectilesAnimation(projectiles, frames = 40, interval=300)
+
+FuncAnimation(fig, animation.update, 
+	frames=animation.frames, interval=animation.interval, blit=True).save('outputs/projectile.gif')
+
 
 plt.show()
 
