@@ -1,11 +1,3 @@
-"""
-TODO:
-
-- one projectile animated position
-- make previous positions transparent
-- multiple projectiles with same starting positions but different velocity vectors
-"""
-
 import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -37,36 +29,45 @@ class Projectile:
 fig = plt.figure()
 axes = plt.axes(xlim=(0, 300), ylim=(0, 200)) # in meters
 
-class ProjectileAnimation:
+class ProjectilesAnimation:
 
-	def __init__(self, projectiles):
+	def __init__(self, projectiles, frames, interval):
 		self.projectiles = projectiles
-		for _ in range(len(projectiles)):
-			self.currentPositions, = axes.plot([], [], 'o', color = (0, 0, 1, 1))
-			self.previousPositions, = axes.plot([], [], 'o', color = (0, 0, 1, 0.2))
-
-			self.currentPositions.set_data([], [])
-			self.previousPositions.set_data([], [])
-
-	# def init(self):
-	# 	return self.previousPositions, self.currentPositions
+		self.frames = frames
+		self.interval = interval
+		self.currentPositions = () 
+		self.previousPositions = () # each projectile has its line2D object
+		N = len(projectiles)
+		for i in range(N):
+			color = (float(1/N)*(i+1), 0, float(1/N)*(i+1))
+			self.currentPositions = self.currentPositions + (axes.plot([], [], 'o', color = color+(1, ))[0], )
+			self.previousPositions = self.previousPositions + (axes.plot([], [], 'o', color = color+(0.2, ))[0], )
 
 
 	def update(self, i):
-		deltaT = i * 0.5
-		if self.currentPositions.get_xdata(): # = true from the second frame
-			self.previousPositions.set_data(
-				self.previousPositions.get_xdata() + self.currentPositions.get_xdata(),
-				self.previousPositions.get_ydata() + self.currentPositions.get_ydata()
-			)
-		x, y = self.projectiles[0].position(deltaT)
-		self.currentPositions.set_data([x], [y])
-		return self.previousPositions, self.currentPositions
+		deltaT = i * float(self.interval / 1000) # period elapsed for the projectile time in seconds
+		if i % self.frames > 1:
+			for (previous, current) in zip(self.previousPositions, self.currentPositions):
+				previous.set_data(
+					previous.get_xdata() + current.get_xdata(),
+					previous.get_ydata() + current.get_ydata())
+
+		elif i % self.frames == 1: # clear the figure periodically
+			for (previous, current) in zip(self.previousPositions, self.currentPositions):
+				previous.set_data([], [])
+				current.set_data([], [])
+
+		for projectile, currentPos in zip(self.projectiles, self.currentPositions):
+			x, y = projectile.position(deltaT)
+			currentPos.set_data([x], [y])
+
+		return self.previousPositions + self.currentPositions
 
 
-projectiles = [Projectile(5, 5, 20, 40)]
-animation = ProjectileAnimation(projectiles)
-FuncAnimation(fig, animation.update, frames=30, interval=100, blit=True)
+projectiles = [Projectile(5, 5, 20, 40), Projectile(5, 5, 40, 30), Projectile(5, 5, 10, 60)]
+animation = ProjectilesAnimation(projectiles, frames = 80, interval=200)
+
+FuncAnimation(fig, animation.update, frames=animation.frames, interval=animation.interval, blit=True)
 
 plt.show()
 
