@@ -1,0 +1,52 @@
+- Conservation de masse
+	-> The balance we assume when writing chemical reactions equations is due to this law
+
+- Conservation de quantité de mouvement (momentum)
+
+- Diffusion is the net movement of anything (for example, atoms, ions, molecules, energy) from a region of higher concentration to a region of lower concentration. Diffusion is driven by a gradient in concentration.
+
+- "Studying velocity instead of position makes more sense for a fluid" - wiki !!
+
+
+
+
+
+
+=============== Questions
+
+
+
+
+
+
+
+
+
+============== Answers ===================
+
+- différence entre pression et densité du fluide ?
+	- "To define the pressure at a specific point, the pressure is defined as the force dF exerted by a fluid over an infinitesimal element of area dA containing the point, resulting in p=dF/dA"
+
+	- If we consider a water container with constant density of water. The pressure is greater at the bottom than at the top
+
+
+- densité vs masse volumique ?
+	- "Le terme Anglais pour masse volumique, c'est density."
+	- "Il ne faut pas confondre la masse volumique avec la notion de densité. Cette dernière est un rapport entre la masse volumique d’une substance et la masse volumique de référence, soit l’eau (pour les liquides et les solides) et l’air (pour les gaz). La densité n’est exprimée avec aucune unité puisqu’il s’agit d’un rapport."
+	- "On établit le rapport des gaz avec la masse volumique de l'air."
+
+	- densité = relative density
+	- relative density of a substance = density of the substance / density of water
+
+	- if the relative density of the substance is > 1, it tells that the object will sink in water, otherwise it will float (ignoring the case of a substance that has the same density as water if it exists)
+
+
+
+
+
+============== Bonus information ================
+
+- The reason why the pressure at the bottom of water is greater than the top:
+	- The pressure is the force per unit of volume.
+	- In this case the force is the weight of water
+	- If we consider the volume = section of contained * unit of height, the force applied on the molecules of water of this section is the weight of the water above it. So this force is greater if we move downwards. 
