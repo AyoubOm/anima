@@ -14,7 +14,16 @@
 
 =============== Questions
 
+- Diffusion vs divergence ?
 
+
+
+
+
+
+=============== Bonus questions
+
+- Why does a dye, when put in water diffuse ? Why perfums diffuse ? ...
 
 
 
@@ -50,3 +59,5 @@
 	- The pressure is the force per unit of volume.
 	- In this case the force is the weight of water
 	- If we consider the volume = section of contained * unit of height, the force applied on the molecules of water of this section is the weight of the water above it. So this force is greater if we move downwards. 
+
+	- Same thing occurs in the atmosphere, on the ground we have the highest air pressure than all the other altitudes.
