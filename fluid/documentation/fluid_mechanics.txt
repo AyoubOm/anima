@@ -1,5 +1,7 @@
-- Conservation de masse
+- Mass consevation
 	-> The balance we assume when writing chemical reactions equations is due to this law
+	-> For a given volume of a fluid, the change of mass inside it is equal to the mass that flows in - mass that flows out. Meaning no mass is created from nothing and no mass is destroyed into nothing.
+
 
 - Conservation de quantité de mouvement (momentum)
 
@@ -8,6 +10,16 @@
 - "Studying velocity instead of position makes more sense for a fluid" - wiki !!
 
 
+- Difference between Advection and Convection:
+	-> Convection is the movement of a fluid, typically in response to heat.
+		Advection is the movement of some material dissolved or suspended in the fluid.
+
+
+
+============== Navier-Stokes ==============
+
+- It's Newton's second law applied to an infitesimally small volume, taking into account forces due to  gravity, pressure, and viscosity. (note that Pressure is due to gravity (alone?) but gravity applied to upper layers of fluid not the volume itself - update: not only gravity, if there is any kind of force pushing some region of fluid this region will
+apply a force on its neighbors and so on.. and this is pressure)
 
 
 

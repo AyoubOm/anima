@@ -5,12 +5,9 @@
 	+ The particles that are carried by the fluid: dust, smoke, ...
 
 
-- Here, we are not interested in visualizing the fluid, but in the objects that it carries.
-	-> "Of course, moving water is really boring if there's nothing in it, because you can't see it moving!" -> I am not OK with this, waves in water can be seen...
-
 - The motion of the smoke/dust/.. is determined by the velocity field of the fluid.
 	"A velocity field on its own isn’t really visually interesting until it starts moving objects such as
-smoke particles, dust or leaves." - Jos Stam
+smoke particles, dust or leaves."
 
 3- "Light objects such as dust are usually just carried along with the velocity field: they simply follow the velocity."
 
@@ -23,9 +20,8 @@ smoke particles, dust or leaves." - Jos Stam
 
 
 
-=========== Navier-Stokes (physicist point of view) =============
+=========== Navier-Stokes (Programmer point of view) =============
 
-- Interpretation of the two equations ?
 
 - 2nd equation: Density comes from:
 	+ A source if it exists in the unit volume
@@ -34,10 +30,7 @@ smoke particles, dust or leaves." - Jos Stam
 
 
 
-
-=========== Solving Navier-Stokes equations ===============
-
-- Gauss Seidel ?
+- The first equation described in the paper applies to any characteristic in the fluid: density, density of another material, .. The second equation applies this equation to the density of the material introduced in the fluid. 
 
 
 
@@ -57,15 +50,17 @@ smoke particles, dust or leaves." - Jos Stam
 		What is the difference between the diffusion in 1 and in 5 ?
 
 
+- edge cases (boundaries of the grid):
+	-> the horizontal component of the velocity should be zero on the vertical walls
+	-> the vertical component of the velocity should be zero on the horizontal walls
 
 
 ======== Questions =========
 
 - What is the density in Navier-Stokes, is it density of the fluid ?
+	-> No, it's the density of the material introduced in the fluid.
 
 - For smoke, how do we compute the density of the smoke in a unit volume based on the density of the fluid in that volume ?
-
-- Because density is not used to compute velocity (first equation), in case of dust where it's velocity is the same as velocity of the fluid (fact 3), we don't need the second equation ?
 
 - Shouldn't we divide by 4 normally here x0[IX(i-1,j)]+x0[IX(i+1,j)]+x0[IX(i,j-1)]+x0[IX(i,j+1)]-4*x0[IX(i,j)] for computing the net new density ?
 

@@ -1,3 +1,19 @@
+============= Questions =============
+
+- Divergence Theorem ?
+
+
+
+
+
+
+========= Partial differentiation ===========
+
+
+
+
+
+
 =========== Gradient ===========
 
 - generalization of derivative for a multi-variable function
@@ -8,7 +24,9 @@
 high value of the function. For a positive slope the vector points to the right, for derivative = 0, the vector is 0
 and points to the left for a negative slope.
 
-- The gradient field is represented in the input space of the function. Example f: (R, R) -> R, the gradient field is represented in the input (R, R) 
+- The gradient field is represented in the input space of the function. Example f: (R, R) -> R, the gradient field is represented in the input (R, R)
+
+- Le gradient c'est pas par rapport au temps, c'est par rapport à l'espace
 
 
 
@@ -16,13 +34,9 @@ and points to the left for a negative slope.
 
 - In physical terms, the divergence of a vector field is the extent to which the vector field flux behaves like a source at a given point. It is a local measure of its "outgoingness"
 
-- If we image a unit volume where the we have the same density (not sure if I can say it is density) entering than leaving the volume. If the speed at which the particles are entering is smaller than that at which they are leaving, the divergence is strictly positive.
+- If we image a unit volume where we have the same density (not sure if I can say it is density) entering than leaving the volume. If the speed at which the particles are entering is smaller than that at which they are leaving, the divergence is strictly positive.
 
 - If a fluid is incompressible, then divergence is 0 everywhere.
-
-
-
-
 
 
 
@@ -36,6 +50,8 @@ and points to the left for a negative slope.
 - And negative at points which are local maximas for the same reason.
 
 - It is analogous to the second derivative.
+
+
 
 
 

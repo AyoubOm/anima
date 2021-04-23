@@ -1,6 +1,3 @@
-(for Gauss Seidel)
-
-
 ======= Algèbre linéaire ==========
 
 
