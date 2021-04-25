@@ -1,5 +1,6 @@
 import pygame
 from typing import Dict, Tuple, List
+import random
 
 N = 60
 gridSide= (N+2)*(N+2)
@@ -8,10 +9,10 @@ prevDensity = [0.0 for _ in range(gridSide)] # using flattened array: perhaps be
 density = [0.0 for _ in range(gridSide)]
 prevVelocityX = [0.0 for _ in range(gridSide)]
 velocityX = [0.0 for _ in range(gridSide)]
-prevVelocityY = [2.0 for _ in range(gridSide)]
+prevVelocityY = [3.0 for _ in range(gridSide)]
 velocityY = [0.0 for _ in range(gridSide)]
 
-dt = 0.1 #TODO: value ?
+dt = 0.2 #TODO: value ?
 
 
 
@@ -53,17 +54,19 @@ def addSource(field: List[float], sources: Dict[Tuple[int, int], float]):
 def diffuse(prevField: List[float], field: List[float], rate: float, onX: bool = False, onY: bool = False):
 	global dt
 
-	rate = rate * dt# Note: maybe rate need to adapt to size of N
+	rate = rate * dt # Note: maybe rate need to adapt to size of N
 	for _ in range(20): # number of iterations gauss seidel
 		for i in range(1, N+1):
 			for j in range(1, N+1):
-				field[index(i, j)] = (prevField[index(i, j)] + (rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])/(1+4*rate)))
+				field[index(i, j)] = (prevField[index(i, j)] + (rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])))/(1+4*rate)
 
 	# for i in range(1, N+1):
 	# 	for j in range(1, N+1):
-	# 		print("initial: ", field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])
-	# 		print("with rate: ", (rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])/(1+4*rate)))
-
+	# # 		print("initial: ", field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])
+	# # 		print("with rate: ", (rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])/(1+4*rate)))
+	# 		value = rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])/(1+4*rate)
+	# 		if value > 1:
+	# 			print(value)
 
 	# for i in range(1, N+1):
 	# 	for j in range(1, N+1):
@@ -93,6 +96,7 @@ def advect(prevField: List[float], field: List[float], velocityX: List[float], v
 			s0 = (1-s1) # = i0+1 - x
 			t1 = (y-j0)
 			t0 = (1-t1)
+			# if i == (N+2)//2 and j == (N+2)//2:
 			# print(s0, s1, t1, t0)
 			field[index(i,j)] = s0*(t0*prevField[index(i0,j0)] + t1*prevField[index(i0,j1)]) + s1*(t0*prevField[index(i1,j0)] + t1*prevField[index(i1,j1)])
 
@@ -144,29 +148,30 @@ def project():
 
 
 def densityStep():
-	densSources = {((N+2)//2, (N+2)//2): 255} #TODO: value ?
+	densSources = {((N+2)//2, (N+2)//2): 2550} #TODO: value ?
 
 	global velocityX, velocityY, density, prevDensity
 
 	addSource(density, densSources)
 	# addSource(density, prevDensity)
-	print("after adding source", prevDensity[index((N+2)//2, (N+2)//2)])
+	# print("after adding source", prevDensity[index((N+2)//2, (N+2)//2)])
 	density, prevDensity = prevDensity, density
 	diffuse(prevDensity, density, rate = 0.1) #TODO: value ?
-	print("after diffuse ", prevDensity[index((N+2)//2, (N+2)//2)])
+	# print("after diffuse ", prevDensity[index((N+2)//2, (N+2)//2)])
 	density, prevDensity = prevDensity, density
 	advect(prevDensity, density, velocityX, velocityY)
-	print("after advect ", prevDensity[index((N+2)//2, (N+2)//2)])
+	# print("after advect ", prevDensity[index((N+2)//2, (N+2)//2)])
 
 
 
 def velocityStep():
-	velSources = {((N+2)//2, (N+2)//2): -2.0} #TODO: value ?
+	# velSourceX = {((N+2)//2, (N+2)//2): random.uniform(-3,0)} #TODO: value ?
+	velSourceX = {((N+2)//2, (N+2)//2): -3} #TODO: value ?
+	# velSourceY = {((N+2)//2, (N+2)//2): random.uniform(-3,0)} #TODO: value ?
 
 	global velocityX, prevVelocityX, velocityY, prevVelocityY
-	addSource(velocityY, velSources)
-	# addSource(velocityX, prevVelocityX)
-	# addSource(velocityY, prevVelocityY)
+	addSource(velocityX, velSourceX)
+	# addSource(velocityY, velSourceY)
 	velocityX, prevVelocityX = prevVelocityX, velocityX
 	velocityY, prevVelocityY = prevVelocityY, velocityY
 	diffuse(prevVelocityX, velocityX, rate = 0.1, onX = True) #TODO: value ?
@@ -198,14 +203,16 @@ def drawDensity():
 			pygame.draw.rect(screen, color, (j*CELL_SIDE, i*CELL_SIDE, CELL_SIDE, CELL_SIDE))
 	pygame.display.flip()
 
-	print(density[index((N+2)//2, (N+2)//2)])
+	print("middle color: ", density[index((N+2)//2, (N+2)//2)])
 
 
 
 initGrid()
-prevDensity[index((N+2)//2, (N+2)//2)] = 255
+# prevDensity[index((N+2)//2, (N+2)//2)] = 255
 # density[index((N+2)//2, (N+2)//2)] = 0
-for _ in range(100):
+fpsClock = pygame.time.Clock()
+fpsClock.tick(40)
+for _ in range(200):
 	velocityStep()
 	densityStep()
 	drawDensity()
@@ -215,3 +222,4 @@ while True:
 	event = pygame.event.poll()
 	if event.type == pygame.QUIT:
 		pygame.quit()
+
