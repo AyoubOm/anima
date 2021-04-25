@@ -2,7 +2,7 @@ import pygame
 from typing import Dict, Tuple, List
 import random
 
-N = 60
+N = 64
 gridSide= (N+2)*(N+2)
 
 prevDensity = [0.0 for _ in range(gridSide)] # using flattened array: perhaps better cache locality
@@ -12,9 +12,9 @@ velocityX = [0.0 for _ in range(gridSide)]
 prevVelocityY = [3.0 for _ in range(gridSide)]
 velocityY = [0.0 for _ in range(gridSide)]
 
-dt = 0.2 #TODO: value ?
+dt = 0.1 #TODO: value ?
 
-
+NB_ITER = 3
 
 
 SCREEN_SIDE = 640
@@ -36,7 +36,6 @@ def index(i, j):
 
 
 
-# def addSource(field: list[float], sources: dict[tuple[int, int], float]):
 def addSource(field: List[float], sources: Dict[Tuple[int, int], float]):
 	global dt
 	# we will assume here few sources (which is the case generally)
@@ -46,31 +45,17 @@ def addSource(field: List[float], sources: Dict[Tuple[int, int], float]):
 		field[index(i, j)] += value*dt
 
 
-# def addSource(field: List[float], prevField: List[float]):
-# 	for i in range((N+2)*(N+2)):
-# 		field[i] += dt*prevField[i]
 
 
 def diffuse(prevField: List[float], field: List[float], rate: float, onX: bool = False, onY: bool = False):
-	global dt
+	global dt, NB_ITER
 
-	rate = rate * dt # Note: maybe rate need to adapt to size of N
-	for _ in range(20): # number of iterations gauss seidel
+	a = rate * dt# Note: maybe rate need to adapt to size of N
+	for _ in range(NB_ITER): # number of iterations gauss seidel
 		for i in range(1, N+1):
 			for j in range(1, N+1):
-				field[index(i, j)] = (prevField[index(i, j)] + (rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])))/(1+4*rate)
+				field[index(i, j)] = (prevField[index(i, j)] + (a * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])))/(1+4*a)
 
-	# for i in range(1, N+1):
-	# 	for j in range(1, N+1):
-	# # 		print("initial: ", field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])
-	# # 		print("with rate: ", (rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])/(1+4*rate)))
-	# 		value = rate * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])/(1+4*rate)
-	# 		if value > 1:
-	# 			print(value)
-
-	# for i in range(1, N+1):
-	# 	for j in range(1, N+1):
-	# 		print(field[index(i, j)])
 	# Note: We can optimize the calls to index by initialising it before the for j loop and doing substractions
 	# and additions on it for the indices of the neighbors
 
@@ -130,7 +115,7 @@ def project():
 	setBoundaries(div)
 	setBoundaries(p)
 
-	for _ in range(20): # number of iterations gauss seidel
+	for _ in range(NB_ITER): # number of iterations gauss seidel
 		for i in range(1, N+1):
 			for j in range(1, N+1):
 				p[index(i,j)] = (div[index(i,j)]+p[index(i-1,j)]+p[index(i+1,j)]+p[index(i,j-1)]+p[index(i,j+1)])/4
@@ -148,34 +133,49 @@ def project():
 
 
 def densityStep():
-	densSources = {((N+2)//2, (N+2)//2): 2550} #TODO: value ?
+	# densSources = {((N+2)//2, (N+2)//2): 2550, (2*(N+2)//3, (N+2)//3): 2550} #TODO: value ?
+	source1 = ((N+2)//2, (N+2)//2)
+	source2 = (2*(N+2)//3, (N+2)//3)
+
+	densSources = {}
+	for i in range(3):
+		densSources[(source1[0]+i, source1[1]+i)] = 2550
+
+	for i in range(3):
+		densSources[(source2[0]+i, source2[1]+i)] = 2550
 
 	global velocityX, velocityY, density, prevDensity
 
 	addSource(density, densSources)
-	# addSource(density, prevDensity)
-	# print("after adding source", prevDensity[index((N+2)//2, (N+2)//2)])
 	density, prevDensity = prevDensity, density
 	diffuse(prevDensity, density, rate = 0.1) #TODO: value ?
-	# print("after diffuse ", prevDensity[index((N+2)//2, (N+2)//2)])
 	density, prevDensity = prevDensity, density
 	advect(prevDensity, density, velocityX, velocityY)
-	# print("after advect ", prevDensity[index((N+2)//2, (N+2)//2)])
 
 
 
 def velocityStep():
-	# velSourceX = {((N+2)//2, (N+2)//2): random.uniform(-3,0)} #TODO: value ?
-	velSourceX = {((N+2)//2, (N+2)//2): -3} #TODO: value ?
-	# velSourceY = {((N+2)//2, (N+2)//2): random.uniform(-3,0)} #TODO: value ?
+	source1 = ((N+2)//2, (N+2)//2)
+	source2 = (2*(N+2)//3, (N+2)//3)
+
+	velSourceX, velSourceY = {}, {}
+	for i in range(6):
+		velSourceX[(source1[0]+i, source1[1]+i)] = 6
+		velSourceX[(source2[0]+i, source2[1]+i)] = -5
+
+	for i in range(6):
+		velSourceY[(source1[0]+i, source1[1]+i)] = -3
+		velSourceY[(source2[0]+i, source2[1]+i)] = 5
+
+	# velSourceX = {: -3, : -5} #TODO: value ?
+	# velSourceY = {(2*(N+2)//3, (N+2)//3): 5} #TODO: value ?
 
 	global velocityX, prevVelocityX, velocityY, prevVelocityY
 	addSource(velocityX, velSourceX)
-	# addSource(velocityY, velSourceY)
 	velocityX, prevVelocityX = prevVelocityX, velocityX
 	velocityY, prevVelocityY = prevVelocityY, velocityY
-	diffuse(prevVelocityX, velocityX, rate = 0.1, onX = True) #TODO: value ?
-	diffuse(prevVelocityY, velocityY, rate = 0.1, onY = True) #TODO: value ?
+	diffuse(prevVelocityX, velocityX, rate = 0.01, onX = True) #TODO: value ?
+	diffuse(prevVelocityY, velocityY, rate = 0.01, onY = True) #TODO: value ?
 	project()
 	velocityX, prevVelocityX = prevVelocityX, velocityX
 	velocityY, prevVelocityY = prevVelocityY, velocityY
@@ -210,16 +210,14 @@ def drawDensity():
 initGrid()
 # prevDensity[index((N+2)//2, (N+2)//2)] = 255
 # density[index((N+2)//2, (N+2)//2)] = 0
-fpsClock = pygame.time.Clock()
-fpsClock.tick(40)
-for _ in range(200):
-	velocityStep()
-	densityStep()
-	drawDensity()
+	
 
 
 while True:
 	event = pygame.event.poll()
 	if event.type == pygame.QUIT:
 		pygame.quit()
+	velocityStep()
+	densityStep()
+	drawDensity()
 
