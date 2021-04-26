@@ -1,0 +1,53 @@
+======= Algèbre linéaire ==========
+
+
+- vecteur =
+		- 1er point de vue : son origine est l'origine de l'espace + caractérisé par une longeur et une direction
+		- 2eme point de vue : combien bouger sur x + combien bouger sur y (pour 2 dimensions)
+
+- additions de 2 vecteurs =
+		- 1er point de vue: se déplacer selon le 1er vecteur, puis se déplacer selon le 2eme vecteur. Autrement dit au lieu de prendre comme origine du 2 vecteur l'origine de l'espace, prendre la tête du 1er vecteur comme origin
+		- 2eme point de vue : bouger sur x avec la quantité x1+x2  +  bouger sur y avec la quantité y1+y2
+
+
+- Matrice =
+		- transformation de l'espace = transformation des vecteurs de la base de l'espace
+		- cette transformation est linéaire telle que les lignes de la grille de l'espace restent parallèle et uniformément espacées. 
+		- tel que chaque vecteur dans le nouvel espace a les mêmes coordonnées par rapport à la nouvelle base qu'il avait dans l'ancienne base.
+
+		- Une matrice M = [[1, 2], [-1, 3]] peut être vu comme la transformation de l'espace tel que le vecteur i subit la transformation [1, -1] et le vecteur j subit la transformation [2, 3]
+
+		- multiplier un vecteur par une matrice peut être vu comme la représentation de ce vecteur dans l'espace qui a subit la transformation donnée par la matrice. C'est à dire multiplier le nouveau i par x et le nouveau j par y
+ 
+ 		- Multiplier 2 matrices est donc équivalent à faire subir à l'espace la transformation donnée par la matrice de droite puis faire subir à ce nouvel espace la transformation donnée par la matrice de gauche. L'ordre est important sinon ça donne un espace résultat différent
+
+
+
+
+- So linear algebra helps solve system of equations, however this system should be "linear" (c1.x1 + c2.x2 + .. = ..), no
+sin(x1) or x1.y1 ...
+
+
+- Matrix inversion:
+	- So to solve our system of equations we represent it as M.X = V, where M is the matrix defined with coefficients present in the equations and V is the vectors of constants at the left hand side of equations. X is the set of unknown variables we want to find.
+	-> The intuition about matrix inversion is that, M made a transformation of our space that transformed X in the input space to the vector V in the output space. We want to find what transformation we can apply to the space so that V is transformed to X.
+	-> If we make a transformation M on the space, if we are able to give a transformation A to this new space that transform it to the initial space (before applying M) then this matrix A is called the inverse of M. 
+
+	- We know we can inverse a matrix M when its determinant is != 0. This means that the transformation M made on the initial space doesn't lead to a space with a lower dimension. While we can transform a space to another with lower dimension, I don't think we can transform a space to another with higher dimension (if this was the case then any matrix could be invertible I guess). The determinant is like a measure of the volume of the output space, if a matrix transforms a volume to an area, the volume of the are is 0, if it transforms it to another volume, then it is !=0 
+
+
+
+
+
+========= Iterative methods ===========
+
+- To solve a system of equations Ax = b:
+	- we write it as "x = T.x + c"
+	- Then take an initial vector x0
+	- then compute x(k+1) from x(k) using x(k+1) = T.x(k) + c
+	- The sequence must converge to a x* which is a point fixe : x* = T.x* + c
+
+
+========= Gauss Seidel ===========
+
+- "Le premier est qu'on peut se demander pourquoi on a besoin d'une méthode qui donne une solution approchée à une équation, alors qu'on dispose d'un algorithme (le pivot de Gauss) qui donne en un temps raisonnable (de l'ordre de n3 opérations) une solution exacte. Il se trouve que le pivot de Gauss est numériquement instable. Les erreurs de calcul de l'ordinateur s'accumulent et font que la solution que l'on calcule est parfois très éloignée de la solution exacte. La convergence de la méthode de Gauss-Seidel est fondée sur le théorème du point fixe, et cette méthode a moins ce défaut."

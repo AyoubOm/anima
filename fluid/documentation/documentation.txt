@@ -1,0 +1,67 @@
+=========== Preliminaries ============
+
+- We have two kinds of objects:
+	+ The fluid particles: air, water, ...
+	+ The particles that are carried by the fluid: dust, smoke, ...
+
+
+- The motion of the smoke/dust/.. is determined by the velocity field of the fluid.
+	"A velocity field on its own isn’t really visually interesting until it starts moving objects such as
+smoke particles, dust or leaves."
+
+3- "Light objects such as dust are usually just carried along with the velocity field: they simply follow the velocity."
+
+1- "In the case of smoke, it is prohibitively expensive to model every particle. Hence in this case the smoke particles are replaced by a smoke density"
+
+2- "The evolution of the density field through the velocity field of the fluid is described by the second equation of Navier-Stokes"
+
+
+- I suppose the parameter x of "add_sources" in page 5 is the density, and s will be zeros except in cells which contain sources of (non-fluid) particles.
+
+
+
+=========== Navier-Stokes (Programmer point of view) =============
+
+
+- 2nd equation: Density comes from:
+	+ A source if it exists in the unit volume
+	+ The neighbor units of volume, and density in the unit volume is tranferred to neighbors (diffusion)
+	+ Due to dynamic fluid, this density will go to another unit of volume and this unit of volume will get the density of another one (advection)
+
+
+
+- The first equation described in the paper applies to any characteristic in the fluid: density, density of another material, .. The second equation applies this equation to the density of the material introduced in the fluid. 
+
+
+
+
+
+
+========== Algorithm steps ===========
+
+- "To summarize, this does the following steps:
+		1- Diffuse all three velocity components.
+		2- Fix up velocities so they keep things incompressible
+		3- Move the velocities around according to the velocities of the fluid (confused yet?).
+		4- Fix up the velocities again
+		5- Diffuse the dye.
+		6- Move the dye around according to the velocities." - mikeash.com
+
+
+- edge cases (boundaries of the grid):
+	-> the horizontal component of the velocity should be zero on the vertical walls
+	-> the vertical component of the velocity should be zero on the horizontal walls
+
+
+======== Questions =========
+
+- What is the density in Navier-Stokes, is it density of the fluid ?
+	-> No, it's the density of the material introduced in the fluid.
+
+- For smoke, how do we compute the density of the smoke in a unit volume based on the density of the fluid in that volume ?
+	-> density of fluid is not required to compute density of the smoke, only the velocity for the advection step.
+
+
+======= Bonus Questions =======
+
+- "The Navier-Stokes equations can be solved analytically for only a few simple physical configurations". Why ?
