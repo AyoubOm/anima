@@ -1,22 +1,9 @@
-============= Questions =============
-
-- Divergence Theorem ?
-
-
-
-
-
-
-========= Partial differentiation ===========
-
-
-
 
 
 
 =========== Gradient ===========
 
-- generalization of derivative for a multi-variable function
+- generalization of derivative for a multi-variable function, for space not for time.
 
 - For a one-variable function, the field of vectors would be a line
 
@@ -25,8 +12,6 @@ high value of the function. For a positive slope the vector points to the right,
 and points to the left for a negative slope.
 
 - The gradient field is represented in the input space of the function. Example f: (R, R) -> R, the gradient field is represented in the input (R, R)
-
-- Le gradient c'est pas par rapport au temps, c'est par rapport à l'espace
 
 
 

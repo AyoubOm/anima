@@ -39,20 +39,6 @@ sin(x1) or x1.y1 ...
 
 
 
-======= Questions ==========
-
-
-- How we invert a matrix ?
-
-- la méthode de Gauss Seidel converge si la matrice est symétrique définie positive. "symétrique définie positive" ? 
-
-- complexity of Gauss Seidel ?
-
-- why does Gauss Seidel converge faster than Jacobi method ? 
-
-
-
-
 ========= Iterative methods ===========
 
 - To solve a system of equations Ax = b:

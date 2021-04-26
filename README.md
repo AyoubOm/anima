@@ -24,3 +24,16 @@ Use DFS to solve the generated maze.
 Simulation of a projectile motion based on Newton's second law of motion.
 
 ![Alt Text](./projectile/outputs/projectile.gif)
+
+## Fluid simulation
+Simulation of fluid dynamics using Navier-Stokes equations.
+
+### Fire in air
+![Alt Text](./fluid/outputs/fire.gif)
+
+### Smoke in air
+![Alt Text](./fluid/outputs/smoke.gif)
+
+### Ink in water
+![Alt Text](./fluid/outputs/ink.gif)
+

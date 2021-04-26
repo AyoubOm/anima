@@ -1,5 +1,12 @@
+"""
+Fluid simulation using Navier-Stokes based on paper Real-Time Fluid Dynamics for Games by Jos Stam
+"""
+
 from typing import Dict, Tuple, List
+import matplotlib.pyplot as plt
+from matplotlib import animation
 import random
+import sys
 
 N = 40
 gridSide= (N+2)*(N+2)
@@ -7,32 +14,25 @@ gridSide= (N+2)*(N+2)
 prevDensity = [0.0 for _ in range(gridSide)] # using flattened array: perhaps better cache locality
 density = [0.0 for _ in range(gridSide)]
 
-prevDensity2 = [0.0 for _ in range(gridSide)] # using flattened array: perhaps better cache locality
-density2 = [0.0 for _ in range(gridSide)]
-
 prevVelocityX = [0.0 for _ in range(gridSide)]
 velocityX = [0.0 for _ in range(gridSide)]
 prevVelocityY = [0.0 for _ in range(gridSide)]
 velocityY = [0.0 for _ in range(gridSide)]
 
-dt = 0.1 #TODO: value ?
+dt = 0.2
+viscosity, diffRate = None, None
 
-NB_ITER = 3
+nbIter = 3 # number of iterations for convergence - gauss seidel
 
-array = None
-
+screen = None
 
 
 def index(i, j):
 	return i + j*(N+2)
 
 
-
 def addSource(field: List[float], sources: Dict[Tuple[int, int], float]):
 	global dt
-	# we will assume here few sources (which is the case generally)
-	# we can work with dictionary and update only source locations
-	# rather than iterating over the whole grid
 	for (i, j), value in sources.items():
 		field[index(i, j)] += value*dt
 
@@ -40,24 +40,22 @@ def addSource(field: List[float], sources: Dict[Tuple[int, int], float]):
 
 
 def diffuse(prevField: List[float], field: List[float], rate: float, onX: bool = False, onY: bool = False):
-	global dt, NB_ITER
+	global dt, nbIter
 
-	a = rate * dt # Note: maybe rate need to adapt to size of N
-	for _ in range(NB_ITER): # number of iterations gauss seidel
+	a = rate * dt * N * N
+	for _ in range(nbIter): 
 		for i in range(1, N+1):
 			for j in range(1, N+1):
 				field[index(i, j)] = (prevField[index(i, j)] + (a * (field[index(i, j-1)]+field[index(i-1, j)]+field[index(i+1, j)]+field[index(i, j+1)])))/(1+4*a)
 
 	# Note: We can optimize the calls to index by initialising it before the for j loop and doing substractions
 	# and additions on it for the indices of the neighbors
-
 	setBoundaries(field, onX, onY)
 
 	
 
 
 def advect(prevField: List[float], field: List[float], velocityX: List[float], velocityY: List[float], onX: bool = False, onY: bool = False):
-	# Note: maybe dt need to depend on N
 	global dt
 	dt0 = dt*N
 	for i in range(1, N+1):
@@ -106,7 +104,7 @@ def project():
 	setBoundaries(div)
 	setBoundaries(p)
 
-	for _ in range(NB_ITER): # number of iterations gauss seidel
+	for _ in range(nbIter):
 		for i in range(1, N+1):
 			for j in range(1, N+1):
 				p[index(i,j)] = (div[index(i,j)]+p[index(i-1,j)]+p[index(i+1,j)]+p[index(i,j-1)]+p[index(i,j+1)])/4
@@ -123,58 +121,53 @@ def project():
 
 
 
-def densityStep():
+def densityStep(iteration):
 	source1 = ((N+2)//2, (N+2)//2)
-	source2 = (2*(N+2)//3, (N+2)//3)
+	densSources = {}
 
-	densSources, densSources2 = {}, {}
-	for i in range(1):
-		densSources[(source1[0]+i, source1[1]+i)] = 2000.0
+	for i in range(3):
+		for j in range((4-i)//2):
+			densSources[(source1[0]+i-1, source1[1]+j-1)] = 2500.0
 
-	# for i in range(3):
-	# 	densSources2[(source2[0]+i, source2[1]+i)] = 2550.0
-
-	global velocityX, velocityY, density, prevDensity
-	global prevDensity2, density2
+	global velocityX, velocityY, density, prevDensity, screen
 
 	addSource(density, densSources)
 	density, prevDensity = prevDensity, density
-	diffuse(prevDensity, density, rate = 0.5) #TODO: value ?
+	diffuse(prevDensity, density, rate = diffRate)
 	density, prevDensity = prevDensity, density
 	advect(prevDensity, density, velocityX, velocityY)
 
-	# for i in range(1, N+1):
-	# 	for j in range(1, N+1):
-	# 		if density[index(i, j)] > 10:
-	# 			print(density[index(i, j)])
-
-	global array
-	array = [[density[index(i, j)] for j in range(1, N+1)] for i in range(1, N+1)]
-
-
-	# addSource(density2, densSources2)
-	# density2, prevDensity2 = prevDensity2, density2
-	# diffuse(prevDensity2, density2, rate = 0.01)
-	# density2, prevDensity2 = prevDensity2, density2
-	# advect(prevDensity2, density2, velocityX, velocityY)
+	screen = [[density[index(i, j)] for j in range(1, N+1)] for i in range(1, N+1)]
 
 
 
-def velocityStep():
+def velocityStep(iteration):
 	source1 = ((N+2)//2, (N+2)//2)
 
 	velSourceX, velSourceY = {}, {}
-	velSourceX[source1] = -2
-	# velSourceY[source1] = -2.5
 
+	for i in range(3):
+		for j in range((4-i)//2):
+			if iteration % 200 < 50:	
+				velSourceX[(source1[0]+i-1, source1[1]+j-1)] = -1
+				velSourceY[(source1[0]+i-1, source1[1]+j-1)] = -2
+			elif iteration % 200 < 100:
+				velSourceX[(source1[0]+i-1, source1[1]+j-1)] = 1
+				velSourceY[(source1[0]+i-1, source1[1]+j-1)] = -2
+			elif iteration % 200 < 150:
+				velSourceX[(source1[0]+i-1, source1[1]+j-1)] = 1
+				velSourceY[(source1[0]+i-1, source1[1]+j-1)] = 2
+			else:
+				velSourceX[(source1[0]+i-1, source1[1]+j-1)] = -1
+				velSourceY[(source1[0]+i-1, source1[1]+j-1)] = 2
 
-	global velocityX, prevVelocityX, velocityY, prevVelocityY
+	global velocityX, prevVelocityX, velocityY, prevVelocityY, viscosity
 	addSource(velocityX, velSourceX)
 	addSource(velocityY, velSourceY)
 	velocityX, prevVelocityX = prevVelocityX, velocityX
 	velocityY, prevVelocityY = prevVelocityY, velocityY
-	diffuse(prevVelocityX, velocityX, rate = 0.5, onX = True) #TODO: value ?
-	diffuse(prevVelocityY, velocityY, rate = 0.5, onY = True) #TODO: value ?
+	diffuse(prevVelocityX, velocityX, rate = viscosity, onX = True)
+	diffuse(prevVelocityY, velocityY, rate = viscosity, onY = True)
 	project()
 	velocityX, prevVelocityX = prevVelocityX, velocityX
 	velocityY, prevVelocityY = prevVelocityY, velocityY
@@ -186,19 +179,41 @@ def velocityStep():
 
 
 
-import matplotlib.pyplot as plt
-from matplotlib import animation
-
-
 def update(i):
-	velocityStep()
-	densityStep()
-	im.set_array(array)
+	velocityStep(i)
+	densityStep(i)
+	im.set_array(screen) #TODO: this can be optimized by working with 2d arrays from the beginning
 
-fig = plt.figure()
 
-array = [[density[index(i, j)] for j in range(1, N+1)] for i in range(1, N+1)]
-im = plt.imshow(array, cmap='gray', vmax=255, interpolation='bilinear')
 
-anim = animation.FuncAnimation(fig, update, interval=0)
-plt.show()
+if __name__ == '__main__':
+	colorMap = None
+	if len(sys.argv)<=1 or sys.argv[1] == "fire_air":
+		colorMap = "hot"
+		viscosity = 0.0
+		diffRate = 0.0
+		dt = 0.21
+
+	elif len(sys.argv)>=2 and sys.argv[1] == "smoke_air":
+		colorMap = "binary"
+		viscosity = 0.0
+		diffRate = 0.0001
+		dt = 0.1
+
+	elif len(sys.argv)>=2 and sys.argv[1] == "ink_water":
+		colorMap = "cool"
+		viscosity = 0.0005
+		diffRate = 0.0
+		dt = 0.1
+
+	else:
+		print("usage: {} fire_air|smoke_air|ink_water".format(sys.argv[0]))
+		sys.exit()
+
+	fig = plt.figure()
+
+	screen = [[density[index(i, j)] for j in range(1, N+1)] for i in range(1, N+1)]
+	im = plt.imshow(screen, cmap=colorMap, vmax=500, interpolation='bilinear')
+
+	anim = animation.FuncAnimation(fig, update, interval=0)
+	plt.show()

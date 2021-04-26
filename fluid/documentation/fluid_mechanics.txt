@@ -1,9 +1,6 @@
 - Mass consevation
-	-> The balance we assume when writing chemical reactions equations is due to this law
 	-> For a given volume of a fluid, the change of mass inside it is equal to the mass that flows in - mass that flows out. Meaning no mass is created from nothing and no mass is destroyed into nothing.
 
-
-- Conservation de quantité de mouvement (momentum)
 
 - Diffusion is the net movement of anything (for example, atoms, ions, molecules, energy) from a region of higher concentration to a region of lower concentration. Diffusion is driven by a gradient in concentration.
 
@@ -30,22 +27,9 @@ apply a force on its neighbors and so on.. and this is pressure)
 
 
 
-
-
-
-=============== Bonus questions
-
-- Why does a dye, when put in water diffuse ? Why perfums diffuse ? ...
-
-
-
-
-
-
-
 ============== Answers ===================
 
-- différence entre pression et densité du fluide ?
+- différence entre pression et densité du fluide
 	- "To define the pressure at a specific point, the pressure is defined as the force dF exerted by a fluid over an infinitesimal element of area dA containing the point, resulting in p=dF/dA"
 
 	- If we consider a water container with constant density of water. The pressure is greater at the bottom than at the top

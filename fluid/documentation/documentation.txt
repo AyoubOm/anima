@@ -47,8 +47,6 @@ smoke particles, dust or leaves."
 		5- Diffuse the dye.
 		6- Move the dye around according to the velocities." - mikeash.com
 
-		What is the difference between the diffusion in 1 and in 5 ?
-
 
 - edge cases (boundaries of the grid):
 	-> the horizontal component of the velocity should be zero on the vertical walls
@@ -61,15 +59,7 @@ smoke particles, dust or leaves."
 	-> No, it's the density of the material introduced in the fluid.
 
 - For smoke, how do we compute the density of the smoke in a unit volume based on the density of the fluid in that volume ?
-
-- Shouldn't we divide by 4 normally here x0[IX(i-1,j)]+x0[IX(i+1,j)]+x0[IX(i,j-1)]+x0[IX(i,j+1)]-4*x0[IX(i,j)] for computing the net new density ?
-
-- a = dt * diff * N * N ?
-
-- "For large diffusion rates a the density values start to oscillate, become negative and finally diverge, making the simulation useless". Why does this happen ?
-
-- How do we know that the other method is stable ?
-
+	-> density of fluid is not required to compute density of the smoke, only the velocity for the advection step.
 
 
 ======= Bonus Questions =======
