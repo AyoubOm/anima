@@ -33,7 +33,3 @@ Simulation of fluid dynamics using Navier-Stokes equations.
 
 ### Smoke in air
 ![Alt Text](./fluid/outputs/smoke.gif)
-
-### Ink in water
-![Alt Text](./fluid/outputs/ink.gif)
-
